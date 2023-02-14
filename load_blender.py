@@ -31,7 +31,7 @@ def pose_spherical(theta, phi, radius):
     c2w = torch.Tensor(np.array([[-1,0,0,0],[0,0,1,0],[0,1,0,0],[0,0,0,1]])) @ c2w
     return c2w
 
-def load_blender_data(basedir, testskip=1):
+def load_blender_data(basedir, testskip, half_res=False):
     splits = ['train', 'val', 'test']
     metas = {}
 
@@ -41,7 +41,7 @@ def load_blender_data(basedir, testskip=1):
 
     all_imgs = []
     all_poses = []
-    counts = [0]
+    counts = [0] 
     for s in splits:
         meta = metas[s]
         imgs = []
@@ -52,9 +52,9 @@ def load_blender_data(basedir, testskip=1):
         else:
             skip = testskip
         
-        for frame in metas['frames'][::skip]:
+        for frame in meta['frames'][::skip]:
             fname = os.path.join(basedir, frame['file_path'] + '.png')
-            imgs.append(cv2.imread(fname, cv2.IMREAD_UNCHANGED))
+            imgs.append(imageio.imread(fname))
             poses.append(np.array(frame['transform_matrix']))
         
         imgs = (np.array(imgs) / 255.).astype(np.float32)
@@ -70,6 +70,17 @@ def load_blender_data(basedir, testskip=1):
     H, W = imgs[0].shape[:2]
     f = .5 * W / np.tan(.5 * float(meta['camera_angle_x']))
 
-    render_poses = torch.stack([pose_spherical(angle, -30.0, 4.0) for angle in np.linspace(-180,180,40+1)[:-1]], 0) # Generate poses for novel views
+    if half_res:
+        H = H//2
+        W = W//2
+        f = f/2.
+
+        imgs_half_res = np.zeros((imgs.shape[0], H, W, 4))
+        for i, img in enumerate(imgs):
+            imgs_half_res[i] = cv2.resize(img, (W, H), interpolation=cv2.INTER_AREA)
+        imgs = imgs_half_res
+
+    # Generate poses for novel views
+    render_poses = np.stack([pose_spherical(angle, -30.0, 4.0) for angle in np.linspace(-180,180,40+1)[:-1]], 0) 
 
     return imgs, poses, render_poses, [H, W, f], i_split

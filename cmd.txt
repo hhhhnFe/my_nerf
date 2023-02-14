@@ -1,0 +1,35 @@
+python main.py --expname blender_paper_lego --basedir ./logs \
+		--datadir ./data/nerf_synthetic/lego --dataset_type blender \
+		--white_bkgd --lrate_decay 500 \
+		--N_samples 64 --N_importance 128 --N_rand 1024
+		
+python main.py --expname blender_paper_lego --basedir ./logs \
+		--datadir ./data/nerf_synthetic/lego --dataset_type blender \
+		--white_bkgd --lrate_decay 500 \
+		--N_samples 64 --N_rand 1024 --N_importance 128
+		
+python main.py --expname blender_paper_lego --basedir ./logs \
+		--datadir ./data/nerf_synthetic/lego --dataset_type blender \
+		--white_bkgd --lrate_decay 500  --no_batching \
+		--precrop_iters 1000 --precrop_frac 0.5 \
+		--N_samples 64 --N_rand 1024 --gpu_num 2
+		
+
+python main.py --expname blender_paper_lego --basedir ./logs \
+		--datadir ./data/nerf_synthetic/lego --dataset_type blender \
+		--lrate_decay 500 --white_bkgd \
+		--N_samples 64 --N_importance 128 --N_rand 1024 \
+		--gpu_num 1
+		
+python main.py --expname blender_paper_lego --basedir ./logs \
+		--datadir ./data/nerf_synthetic/lego --dataset_type blender \
+		--lrate_decay 500 --white_bkgd --no_batching \
+		--N_samples 64 --N_importance 128 --N_rand 1024
+		
+python main.py --expname blender_paper_lego --basedir ./logs \
+		--datadir ./data/nerf_synthetic/lego --dataset_type blender \
+		--lrate_decay 500 --white_bkgd --no_batching \
+		--N_samples 64 --N_importance 128 --N_rand 1024 \
+		--precrop_iters 500 --precrop_frac 0.5
+
+지금 선으로 렌더링 되는거 왜 그런지 고쳐보기
